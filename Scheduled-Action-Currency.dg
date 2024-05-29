@@ -1,0 +1,73 @@
+//
+//
+exchangeRates = invokeurl
+[
+	url :"https://openexchangerates.org/api/latest.json?app_id=" + "APP ID HERE"
+	type :GET
+];
+euroRate = ifNull(exchangeRates.get("rates"),{"EUR":0.95}).get("EUR");
+successCount = 0;
+totalDeals = 0;
+//
+//
+deals = Map();
+dealUpdates = List();
+dealUpdates.add(List());
+//
+//
+selectText = "select id, Pipeline, Amount from Deals where Pipeline = 'Europe' limit 500";
+queryMap = Map();
+queryMap.put("select_query",selectText);
+response = invokeurl
+[
+	url :"https://www.zohoapis.com/crm/v6/coql"
+	type :POST
+	parameters:queryMap.toString()
+	connection:"crmquery"
+];
+//
+//
+for each  deal in response.get("data")
+{
+	deals.put(deal.get("id"),deal);
+	totalDeals = totalDeals + 1;
+}
+//
+for each  dealId in deals.keys()
+{
+	dealDetails = deals.get(dealId);
+	dealAmount = ifNull(dealDetails.get("Amount"),0);
+	convertedAmount = dealAmount * euroRate;
+	//
+	thisDeal = Map();
+	thisDeal.put("id",dealId);
+	thisDeal.put("Amount_Euro",convertedAmount.truncate(2));
+	thisDeal.put("Last_Amount_Calculation_Time",now.toString("YYYY-MM-dd'T'HH:mm:ss"));
+	currentDealBatch = dealUpdates.get(dealUpdates.size() - 1);
+	if(currentDealBatch.size() == 100)
+	{
+		currentDealBatch = List();
+	}
+	else
+	{
+		dealUpdates.remove(dealUpdates.size() - 1);
+	}
+	currentDealBatch.add(thisDeal);
+	dealUpdates.add(currentDealBatch);
+}
+//
+for each  deal in dealUpdates
+{
+	thisDealCreate = zoho.crm.bulkUpdate("Deals",deal);
+	for each  result in thisDealCreate
+	{
+		if(result.get("code") == "SUCCESS")
+		{
+			successCount = successCount + 1;
+		}
+	}
+}
+//
+info "Of " + totalDeals + " Deals, " + successCount + " Deals were successfully updated.";
+//
+//
