@@ -1,6 +1,3 @@
-//
-//
-// The "now" function does not return ideal format, so I will use toString to rearrange.
 currentDateTime = now.toString("YYYY-MM-dd'T'HH:mm:ss");
 info "Current Date: " + currentDateTime;
 //
@@ -13,8 +10,7 @@ if(dealAmount == 0)
 	updateAmount = zoho.crm.updateRecord("Deals",DEAL_ID,{"Amount":0});
 	info "Standard Amount set to $0.00";
 }
-//
-// This is my brain telling me we don't need to run the calculation if it's 0 to begin with.
+// We don't need to run the calculation if it's 0 to begin with.
 if(dealAmount != 0)
 {
 	// invokeURL to get conversion rate, separated the APP ID from the rest of the URL for easy change.
@@ -23,7 +19,6 @@ if(dealAmount != 0)
 		url :"https://openexchangerates.org/api/latest.json?app_id=" + "APP ID HERE"
 		type :GET
 	];
-	//
 	// If invokeURL times out or is null it will use 0.95 in its place.
 	euroExchangeRate = ifNull(exchangeRates.get("rates"),{"EUR":0.95}).get("EUR");
 	info "Euro Exchange Rate: " + euroExchangeRate;
@@ -36,5 +31,3 @@ else
 	updateDeal = zoho.crm.updateRecord("Deals",DEAL_ID,{"Amount_Euro":0,"Last_Amount_Calculation_Time":currentDateTime});
 	info updateDeal;
 }
-//
-//
