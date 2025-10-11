@@ -1,0 +1,18 @@
+void automation.Generate_Deal_Name(String DEAL_ID)
+{
+// This function generates a Deal name from the Account and Contact name plus the amount.
+//
+DEAL_ID = [DEAL_ID HERE];
+dealRecord = zoho.crm.getRecordById("Deals",DEAL_ID);
+accountName = ifNull(dealRecord.get("Account_Name"),{"name":"N/A"}).get("name");
+contactName = ifNull(dealRecord.get("Contact_Name"),{"name":"N/A"}).get("name");
+dealAmount = ifNull(dealRecord.get("Amount"),"$0.00");
+if(dealAmount != "$0.00")
+{
+	dealAmount =  "$" + dealAmount.truncate(0) + ".00";
+}
+finalName = accountName + " - " + contactName + " - " + dealAmount;
+info zoho.crm.updateRecord("Deals",DEAL_ID,{"Deal_Name":finalName});
+//
+//
+}
