@@ -6,3 +6,6 @@ This example is a demo of a a scheduled action that runs once a day (or night) a
 
 ## Example 2 - Custom Function (Workflow Trigger) - Currency Exchange
 This is the same as the first one, but will be triggered via workflow to calculate the exchange rate if the currency field is changed.
+
+## Example 3 - Custom Function (Automation) - Generate Deal Name
+This function will auto-generate a Deal name based on the Account and Contact name. This can be used with a workflow or scheduled action.
