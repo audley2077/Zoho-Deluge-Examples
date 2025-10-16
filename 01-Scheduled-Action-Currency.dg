@@ -1,19 +1,17 @@
-//
-//
+void automation.Calculate_Exchange_Rate(String DEAL_ID)
+{
 exchangeRates = invokeurl
 [
-	url :"https://openexchangerates.org/api/latest.json?app_id=" + "APP ID HERE"
-	type :GET
+	url: "https://openexchangerates.org/api/latest.json?app_id=" + "APP_ID_HERE"
+	type: GET
 ];
 euroRate = ifNull(exchangeRates.get("rates"),{"EUR":0.95}).get("EUR");
 successCount = 0;
 totalDeals = 0;
 //
-//
 deals = Map();
 dealUpdates = List();
 dealUpdates.add(List());
-//
 //
 selectText = "select id, Pipeline, Amount from Deals where Pipeline = 'Europe' limit 500";
 queryMap = Map();
@@ -69,5 +67,4 @@ for each  deal in dealUpdates
 }
 //
 info "Of " + totalDeals + " Deals, " + successCount + " Deals were successfully updated.";
-//
-//
+}
