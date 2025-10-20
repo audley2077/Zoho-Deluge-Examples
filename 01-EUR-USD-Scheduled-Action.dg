@@ -1,15 +1,14 @@
 void automation.Calculate_Exchange_Rate(String DEAL_ID)
 {
-exchangeRates = invokeurl
+exchangeRates = invokeUrl
 [
 	url: "https://openexchangerates.org/api/latest.json?app_id=" + "APP_ID_HERE"
 	type: GET
 ];
-euroRate = ifNull(exchangeRates.get("rates"),{"EUR":0.95}).get("EUR");
+euroRate = ifNull(exchangeRates.get("rates"),{"EUR":0.85}).get("EUR");
 successCount = 0;
 totalDeals = 0;
-//
-deals = Map();
+deals = map();
 dealUpdates = List();
 dealUpdates.add(List());
 //
