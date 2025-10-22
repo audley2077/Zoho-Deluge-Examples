@@ -1,9 +1,10 @@
+void automation.Calculate_Exchange_Rate(String DEAL_ID)
+{
 currentDateTime = now.toString("yyyy-MM-dd'T'HH:mm:ss");
 info "Current Date: " + currentDateTime;
-//
 dealRecord = zoho.crm.getRecordById("Deals",DEAL_ID);
 dealAmount = ifNull(dealRecord.Get("Amount"),0);
-info "Deal Amount: " + dealAmount;
+info "Amount: " + dealAmount;
 if(dealAmount == 0)
 {
 	// Updates the Deal amount field from null to 0 for consistency.
@@ -19,7 +20,7 @@ if(dealAmount != 0)
 		url :"https://openexchangerates.org/api/latest.json?app_id=" + "APP ID HERE"
 		type :GET
 	];
-	// If invokeURL times out or is null it will use 0.95 in its place.
+	// If invokeURL times out or is null it will use 0.85 in its place.
 	euroExchangeRate = ifNull(exchangeRates.get("rates"),{"EUR":0.85}).get("EUR");
 	info "Euro Exchange Rate: " + euroExchangeRate;
 	convertedAmount = dealAmount * euroExchangeRate;
@@ -28,4 +29,5 @@ if(dealAmount != 0)
 else
 {
 	info zoho.crm.updateRecord("Deals",DEAL_ID,{"Amount_Euro":0,"Last_Amount_Calculation_Time":currentDateTime});
+}
 }
