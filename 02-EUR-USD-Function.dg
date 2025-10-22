@@ -1,4 +1,4 @@
-currentDateTime = now.toString("YYYY-MM-dd'T'HH:mm:ss");
+currentDateTime = now.toString("yyyy-MM-dd'T'HH:mm:ss");
 info "Current Date: " + currentDateTime;
 //
 dealRecord = zoho.crm.getRecordById("Deals",DEAL_ID);
@@ -20,14 +20,12 @@ if(dealAmount != 0)
 		type :GET
 	];
 	// If invokeURL times out or is null it will use 0.95 in its place.
-	euroExchangeRate = ifNull(exchangeRates.get("rates"),{"EUR":0.95}).get("EUR");
+	euroExchangeRate = ifNull(exchangeRates.get("rates"),{"EUR":0.85}).get("EUR");
 	info "Euro Exchange Rate: " + euroExchangeRate;
 	convertedAmount = dealAmount * euroExchangeRate;
-	updateDeal = zoho.crm.updateRecord("Deals",DEAL_ID,{"Amount_Euro":convertedAmount.truncate(2),"Last_Amount_Calculation_Time":currentDateTime});
-	info updateDeal;
+	info zoho.crm.updateRecord("Deals",DEAL_ID,{"Amount_Euro":convertedAmount.truncate(2),"Last_Amount_Calculation_Time":currentDateTime});
 }
 else
 {
-	updateDeal = zoho.crm.updateRecord("Deals",DEAL_ID,{"Amount_Euro":0,"Last_Amount_Calculation_Time":currentDateTime});
-	info updateDeal;
+	info zoho.crm.updateRecord("Deals",DEAL_ID,{"Amount_Euro":0,"Last_Amount_Calculation_Time":currentDateTime});
 }
