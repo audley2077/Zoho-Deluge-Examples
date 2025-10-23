@@ -1,8 +1,6 @@
 void automation.Generate_Deal_Name(String DEAL_ID)
 {
-// This function generates a Deal name from the Account and Contact name plus the amount.
-//
-DEAL_ID = [DEAL_ID HERE];
+DEAL_ID = DEAL_ID HERE;
 dealRecord = zoho.crm.getRecordById("Deals",DEAL_ID);
 accountName = ifNull(dealRecord.get("Account_Name"),{"name":"N/A"}).get("name");
 contactName = ifNull(dealRecord.get("Contact_Name"),{"name":"N/A"}).get("name");
