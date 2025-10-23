@@ -8,29 +8,26 @@ exchangeRates = invokeUrl
 euroRate = ifNull(exchangeRates.get("rates"),{"EUR":0.85}).get("EUR");
 successCount = 0;
 totalDeals = 0;
-deals = map();
-dealUpdates = List();
-dealUpdates.add(List());
+deals = Map();
+dealUpdates = list();
+dealUpdates.add(list());
 //
 selectText = "select id, Pipeline, Amount from Deals where Pipeline = 'Europe' limit 500";
-queryMap = Map();
-queryMap.put("select_query",selectText);
-response = invokeurl
+query = Map();
+query.put("select_query",selectText);
+searchResponse = invokeUrl
 [
-	url :"https://www.zohoapis.com/crm/v6/coql"
-	type :POST
-	parameters:queryMap.toString()
-	connection:"crmquery"
+	url: "https://www.zohoapis.com/crm/v8/coql"
+	type: POST
+	parameters: queryMap.toString()
+	connection: "AUTH_CONNECTION_HERE"
 ];
-//
-//
-for each  deal in response.get("data")
+for each deal in searchResponse.get("data")
 {
 	deals.put(deal.get("id"),deal);
 	totalDeals = totalDeals + 1;
 }
-//
-for each  dealId in deals.keys()
+for each dealId in deals.keys()
 {
 	dealDetails = deals.get(dealId);
 	dealAmount = ifNull(dealDetails.get("Amount"),0);
@@ -53,7 +50,7 @@ for each  dealId in deals.keys()
 	dealUpdates.add(currentDealBatch);
 }
 //
-for each  deal in dealUpdates
+for each deal in dealUpdates
 {
 	thisDealCreate = zoho.crm.bulkUpdate("Deals",deal);
 	for each  result in thisDealCreate
