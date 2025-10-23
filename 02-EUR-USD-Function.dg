@@ -7,22 +7,16 @@ dealAmount = ifNull(dealRecord.Get("Amount"),0);
 info "Amount: " + dealAmount;
 if(dealAmount == 0)
 {
-	// Updates the Deal amount field from null to 0 for consistency.
 	updateAmount = zoho.crm.updateRecord("Deals",DEAL_ID,{"Amount":0});
-	info "Standard Amount set to $0.00";
 }
-// We don't need to run the calculation if it's 0 to begin with.
 if(dealAmount != 0)
 {
-	// invokeURL to get conversion rate, separated the APP ID from the rest of the URL for easy change.
-	exchangeRates = invokeurl
+	exchangeRates = invokeUrl
 	[
-		url :"https://openexchangerates.org/api/latest.json?app_id=" + "APP ID HERE"
-		type :GET
-	];
-	// If invokeURL times out or is null it will use 0.85 in its place.
+		url:"https://openexchangerates.org/api/latest.json?app_id=APP_ID_HERE"
+		type:GET
+	];.
 	euroExchangeRate = ifNull(exchangeRates.get("rates"),{"EUR":0.85}).get("EUR");
-	info "Euro Exchange Rate: " + euroExchangeRate;
 	convertedAmount = dealAmount * euroExchangeRate;
 	info zoho.crm.updateRecord("Deals",DEAL_ID,{"Amount_Euro":convertedAmount.truncate(2),"Last_Amount_Calculation_Time":currentDateTime});
 }
