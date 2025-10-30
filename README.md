@@ -10,5 +10,5 @@ This is the same as the first example, but will be triggered via workflow to cal
 ## Example 3 - Custom Function - Generate Deal Name
 This function will auto-generate a Deal name based on the Account and Contact name. It wil also add the total Deal amount. This can be used with any type of trigger.
 
-## Example 3 - Custom Function/Button - Inline Mail Merge From Zoho Books
+## Example 4 - Custom Function/Button - Inline Mail Merge From Zoho Books
 This function can be used with multiple triggers, but I initially made it for a button. It will grab open invoices for a client in Zoho Books and email them the invoice information in a pre-defined Zoho Writer document. There appears to be a limitation with invoking this from the API in which it will always send each record as an individual email. I thought of a few ways around this which I might explore later on.
