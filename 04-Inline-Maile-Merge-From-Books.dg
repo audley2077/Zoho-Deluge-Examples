@@ -1,0 +1,54 @@
+contactId = customer.get("contact_id");
+organizationId = organization.get("organization_id");
+customerData = zoho.books.getRecordsByID("contacts",organizationId,contactId).get("contact");
+//
+fetchParams = Map();
+fetchParams.put("customer_id",contactId);
+fetchParams.put("status","unpaid");
+fetchParams.put("sort_column","due_date");
+fetchParams.put("page","1");
+fetchParams.put("per_page","10");
+fetchInvoices = invokeUrl
+[
+	url: "https://www.zohoapis.com/books/v3/invoices?organization_id=ORGANIZATION_HERE"
+	type: GET
+	parameters: fetchParams
+	connection: "CONNECTION_HERE"
+];
+invoices = fetchInvoices.get("invoices");
+dataList = list();
+for each invoice in invoices
+{
+	invoiceData = Map();
+	invoiceData.put("customer_name",invoice.get("customer_name"));
+	invoiceData.put("company_name",invoice.get("company_name"));
+	invoiceData.put("email",invoice.get("email"));
+	invoiceData.put("invoice_number",invoice.get("invoice_number"));
+	invoiceData.put("due_date",invoice.get("due_date"));
+	invoiceData.put("total",invoice.get("total"));
+	invoiceData.put("balance",invoice.get("balance"));
+	invoiceData.put("cf_invoice_url",invoice.get("invoice_url"));
+	dataList.add(invoiceData);
+}
+//
+mergeParams = Map();
+mergeParams.put("output_format","inline");
+mergeParams.put("subject","Open Invoices");
+mergeParams.put("recipient_email","RECIPIENT_EMAIL_HERE");
+mergeParams.put("merge_data",{"data":dataList});
+inlineMerge = invokeUrl
+[
+	url: "https://www.zohoapis.com/writer/api/v1/documents/DOCUMENT_ID_HERE/merge/email"
+	type: POST
+	parameters: mergeParams
+	connection: "CONNECTION_HERE"
+];
+//
+if(fetchInvoices.get("message") == "success")
+{
+	return {"Status":"Success"};
+}
+else
+{
+	return {"Status":"Failure"};
+}
